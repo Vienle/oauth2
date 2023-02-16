@@ -67,6 +67,7 @@ public class CustomOAuth2UserService extends CustomUserService {
         User user = new User();
         user.setProvider(AuthProvider.valueOf(oAuth2UserRequest.getClientRegistration().getRegistrationId()));
         // zalo id type is String
+        user.setEmail(oAuth2UserInfo.getEmail());
         user.setProviderId(String.valueOf(oAuth2UserInfo.getId()));
         user.setName(oAuth2UserInfo.getName());
         user.setImageUrl(oAuth2UserInfo.getImageUrl());

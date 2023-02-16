@@ -6,10 +6,7 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenRespon
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.util.StringUtils;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,7 +23,13 @@ public class CustomTokenResponseConverter implements
     @Override
     public OAuth2AccessTokenResponse convert(Map<String, Object> tokenResponseParameters) {
         String accessToken = tokenResponseParameters.get(OAuth2ParameterNames.ACCESS_TOKEN).toString();
+        String refreshToken = tokenResponseParameters.get(OAuth2ParameterNames.REFRESH_TOKEN).toString();
+        String expiresIn = tokenResponseParameters.get(OAuth2ParameterNames.EXPIRES_IN).toString();
+        String refreshTokenExpiresIn = tokenResponseParameters.get("refresh_token_expires_in").toString();
         OAuth2AccessToken.TokenType accessTokenType = OAuth2AccessToken.TokenType.BEARER;
+
+        Map<String,Object> additionalRefreshTokenExpiresIn = new HashMap<>();
+        additionalRefreshTokenExpiresIn.put("refresh_token_expires_in",Long.parseLong(refreshTokenExpiresIn));
 
         Set<String> scopes = Collections.emptySet();
         if (tokenResponseParameters.containsKey(OAuth2ParameterNames.SCOPE)) {
@@ -36,6 +39,9 @@ public class CustomTokenResponseConverter implements
         }
 
         return OAuth2AccessTokenResponse.withToken(accessToken)
+            .refreshToken(refreshToken)
+            .expiresIn(Long.parseLong(expiresIn))
+            .additionalParameters(additionalRefreshTokenExpiresIn)
             .tokenType(accessTokenType)
             .scopes(scopes)
             .build();

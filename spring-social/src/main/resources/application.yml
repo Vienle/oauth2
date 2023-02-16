@@ -1,10 +1,10 @@
-logging:
-  level:
-    root: trace
-    org:
-      springframework:
-        security:
-          oauth2: trace
+#logging:
+#  level:
+#    root: trace
+#    org:
+#      springframework:
+#        security:
+#          oauth2: trace
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
@@ -42,7 +42,7 @@ spring:
             client-id: 2407127394695873267
             clientSecret: 7Tp7ZMUrKMl2PcUR3SGO
             authorizationGrantType: authorization_code
-            redirectUri: "{baseUrl}/login/oauth2/callback/{registrationId}"
+            redirectUri: "{baseUrl}/login/oauth2/code/{registrationId}"
         #              client-authentication-method: "client_secret_post"
         provider:
           facebook:
@@ -54,11 +54,11 @@ spring:
             authorization-uri: https://oauth.zaloapp.com/v4/permission
             user-info-uri: https://graph.zalo.me/v2.0/me?fields=id,name,picture
             user-name-attribute: name
-#Flyway:
-#  url: jdbc:mysql://localhost:3306/spring_social
-#  schemas: spring_social
-#  user: "root"
-#  password: 123456
+Flyway:
+  url: jdbc:mysql://localhost:3306/spring_social
+  schemas: spring_social
+  user: "root"
+  password: 123456
 app:
   auth:
     tokenSecret: 04ca023b39512e46d0c2cf4b48d5aac61d34302994c87ed4eff225dcf3b0a218739f3897051a057f9b846a69ea2927a587044164b7bae5e1306219d50b588cb1

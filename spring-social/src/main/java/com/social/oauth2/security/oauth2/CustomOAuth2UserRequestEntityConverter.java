@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequestEntityConverter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.ObjectUtils;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -28,28 +27,24 @@ public class CustomOAuth2UserRequestEntityConverter implements
         ClientRegistration clientRegistration = req.getClientRegistration();
         RequestEntity<?> entity = defaultConverter.convert(req);
 
-        if (req == null) {
+        String registrationId = clientRegistration.getRegistrationId();
+        if (!registrationId.equalsIgnoreCase(AuthProvider.zalo.name())) {
             return entity;
         }
-        String registrationId = clientRegistration.getRegistrationId();
-        if (registrationId.equalsIgnoreCase(AuthProvider.zalo.name())) {
-            // add new field in header
-            MultiValueMap<String, String> newHeaders = new LinkedMultiValueMap<>();
-            if (!Objects.isNull(entity) && !Objects.isNull(entity.getHeaders())){
-                MultiValueMap<String, String> currentHeaders = entity.getHeaders();
-                Iterator<String> it = currentHeaders.keySet().iterator();
-                while (it.hasNext()) {
-                    String theKey = (String) it.next();
-                    newHeaders.put(theKey, Collections.singletonList(currentHeaders.getFirst(theKey)));
-                }
+
+        // add new field in header
+        MultiValueMap<String, String> newHeaders = new LinkedMultiValueMap<>();
+        if (!Objects.isNull(entity) && !Objects.isNull(entity.getHeaders())) {
+            MultiValueMap<String, String> currentHeaders = entity.getHeaders();
+            Iterator<String> it = currentHeaders.keySet().iterator();
+            while (it.hasNext()) {
+                String theKey = (String) it.next();
+                newHeaders.put(theKey, Collections.singletonList(currentHeaders.getFirst(theKey)));
             }
-            newHeaders.add(ACCESS_TOKEN, req.getAccessToken().getTokenValue());
-//            newHeaders.set("Accept", "text/json;charset=UTF-8");
-
-            return new RequestEntity<>(newHeaders,
-                entity.getMethod(), entity.getUrl());
         }
+        newHeaders.add(ACCESS_TOKEN, req.getAccessToken().getTokenValue());
+        return new RequestEntity<>(newHeaders,
+            entity.getMethod(), entity.getUrl());
 
-        return null;
     }
 }
