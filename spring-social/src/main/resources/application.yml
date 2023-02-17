@@ -6,6 +6,8 @@
 #        security:
 #          oauth2: trace
 spring:
+  main:
+    allow-circular-references: true
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/spring_social?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
@@ -17,30 +19,30 @@ spring:
     oauth2:
       client:
         registration:
-#          google:
-#            clientId: 5014057553-8gm9um6vnli3cle5rgigcdjpdrid14m9.apps.googleusercontent.com
-#            clientSecret: tWZKVLxaD_ARWsriiiUFYoIk
-#            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
-#            scope:
-#              - email
-#              - profile
-#          facebook:
-#            clientId: 121189305185277
-#            clientSecret: 42ffe5aa7379e8326387e0fe16f34132
-#            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
-#            scope:
-#              - email
-#              - public_profile
-#          github:
-#            clientId: d3e47fc2ddd966fa4352
-#            clientSecret: 3bc0f6b8332f93076354c2a5bada2f5a05aea60d
-#            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
-#            scope:
-#              - user:email
-#              - read:user
+          #          google:
+          #            clientId: 5014057553-8gm9um6vnli3cle5rgigcdjpdrid14m9.apps.googleusercontent.com
+          #            clientSecret: tWZKVLxaD_ARWsriiiUFYoIk
+          #            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+          #            scope:
+          #              - email
+          #              - profile
+          #          facebook:
+          #            clientId: 121189305185277
+          #            clientSecret: 42ffe5aa7379e8326387e0fe16f34132
+          #            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+          #            scope:
+          #              - email
+          #              - public_profile
+          #          github:
+          #            clientId: d3e47fc2ddd966fa4352
+          #            clientSecret: 3bc0f6b8332f93076354c2a5bada2f5a05aea60d
+          #            redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+          #            scope:
+          #              - user:email
+          #              - read:user
           zalo:
-            client-id: 2407127394695873267
-            clientSecret: 7Tp7ZMUrKMl2PcUR3SGO
+            client-id: your-client-id
+            clientSecret: your-key
             authorizationGrantType: authorization_code
             redirectUri: "{baseUrl}/login/oauth2/code/{registrationId}"
         #              client-authentication-method: "client_secret_post"

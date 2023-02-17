@@ -1,6 +1,7 @@
-package com.social.oauth2.modal.oauth2;
+package com.social.oauth2.security.oauth2;
 
 import com.social.oauth2.constant.Oauth2Constant;
+import com.social.oauth2.modal.oauth2.AuthProvider;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.RequestEntity;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
@@ -12,6 +13,9 @@ import org.springframework.util.MultiValueMap;
 import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * ADD and change param when call api get request token
+ */
 public class CustomRequestEntityConverter implements
     Converter<OAuth2AuthorizationCodeGrantRequest, RequestEntity<?>> {
 
@@ -29,17 +33,17 @@ public class CustomRequestEntityConverter implements
         ClientRegistration clientRegistration = req.getClientRegistration();
         RequestEntity<?> entity = defaultConverter.convert(req);
 
-        if (req == null){
+        if (req == null) {
             return entity;
         }
         String registrationId = clientRegistration.getRegistrationId();
-        if (registrationId.equalsIgnoreCase(AuthProvider.zalo.name())){
+        if (registrationId.equalsIgnoreCase(AuthProvider.zalo.name())) {
             // add new field in header
             MultiValueMap<String, String> currentHeaders = entity.getHeaders();
             Iterator<String> it = currentHeaders.keySet().iterator();
             MultiValueMap<String, String> newHeaders = new LinkedMultiValueMap<>();
-            while(it.hasNext()){
-                String theKey = (String)it.next();
+            while (it.hasNext()) {
+                String theKey = (String) it.next();
                 newHeaders.put(theKey, Collections.singletonList(currentHeaders.getFirst(theKey)));
             }
             newHeaders.add(ZALO_SECRET_KEY, clientRegistration.getClientSecret());
@@ -47,7 +51,7 @@ public class CustomRequestEntityConverter implements
             entity.getHeaders();
 
             // add new filed in body
-            MultiValueMap<String, String> params = (MultiValueMap<String,String>) entity.getBody();
+            MultiValueMap<String, String> params = (MultiValueMap<String, String>) entity.getBody();
             params.add(Oauth2Constant.ZALO_PARAM_APP_ID, clientRegistration.getClientId());
             return new RequestEntity<>(params, newHeaders,
                 entity.getMethod(), entity.getUrl());

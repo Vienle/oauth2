@@ -11,7 +11,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Objects;
 
-
+/**
+ * Add or change params when call authorize request
+ * Late received code from callback from provide, We use it call api get refresh Token
+ */
 public class CustomAuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
 
     private static final String AUTHORIZATION_REQUEST_BASE_URI = "/oauth2/authorize";

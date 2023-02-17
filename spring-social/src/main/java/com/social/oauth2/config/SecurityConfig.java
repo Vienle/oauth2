@@ -1,8 +1,8 @@
 package com.social.oauth2.config;
 
 
-import com.social.oauth2.modal.oauth2.CustomRequestEntityConverter;
-import com.social.oauth2.modal.oauth2.CustomTokenResponseConverter;
+import com.social.oauth2.security.oauth2.CustomRequestEntityConverter;
+import com.social.oauth2.security.oauth2.CustomTokenResponseConverter;
 import com.social.oauth2.security.RestAuthenticationEntryPoint;
 import com.social.oauth2.security.TokenAuthenticationFilter;
 import com.social.oauth2.security.oauth2.*;
@@ -11,11 +11,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.FormHttpMessageConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.endpoint.DefaultAuthorizationCodeTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.http.OAuth2ErrorResponseErrorHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.http.converter.OAuth2AccessTokenResponseHttpMessageConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -87,7 +90,7 @@ public class SecurityConfig {
             .and()
             .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-}
+    }
 
     @Bean
     public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> accessTokenResponseClient() {
@@ -97,7 +100,7 @@ public class SecurityConfig {
 
         OAuth2AccessTokenResponseHttpMessageConverter tokenResponseHttpMessageConverter =
             new OAuth2AccessTokenResponseHttpMessageConverter();
-        tokenResponseHttpMessageConverter.setAccessTokenResponseConverter(new CustomTokenResponseConverter());
+        tokenResponseHttpMessageConverter.setAccessTokenResponseConverter(new CustomTokenResponseConverter(this.clientRegistrationRepository));
         List<MediaType> currentSupportMediaType = tokenResponseHttpMessageConverter.getSupportedMediaTypes();
 
         List<MediaType> customMediaType = new ArrayList<>();
@@ -113,6 +116,24 @@ public class SecurityConfig {
 
         accessTokenResponseClient.setRestOperations(restTemplate);
         return accessTokenResponseClient;
+    }
+
+    @Bean
+    public OAuth2AuthorizedClientManager authorizedClientManager(
+        ClientRegistrationRepository clientRegistrationRepository,
+        OAuth2AuthorizedClientRepository authorizedClientRepository) {
+
+        OAuth2AuthorizedClientProvider authorizedClientProvider =
+            OAuth2AuthorizedClientProviderBuilder.builder()
+                .clientCredentials()
+                .build();
+
+        DefaultOAuth2AuthorizedClientManager authorizedClientManager =
+            new DefaultOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, authorizedClientRepository);
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return authorizedClientManager;
     }
 
 }

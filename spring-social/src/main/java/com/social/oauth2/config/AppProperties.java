@@ -23,7 +23,7 @@ public class AppProperties {
             return tokenSecret;
         }
 
-        public Key getKey(){
+        public Key getKey() {
             return new SecretKeySpec( //WRONG secretKeyEncoded.getBytes(), SignatureAlgorithm.HS256.getJcaName());
                 getTokenSecret().getBytes(), SignatureAlgorithm.HS256.getJcaName());
         }

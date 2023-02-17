@@ -13,6 +13,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Objects;
 
+/**
+ * Add or change param in header, body when call get access token endpoint to provider
+ */
 public class CustomOAuth2UserRequestEntityConverter implements
     Converter<OAuth2UserRequest, RequestEntity<?>> {
     private final String ACCESS_TOKEN = "access_token";
